@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics Mastery Test</title>
+    <style>
+        :root {
+            --primary: #3a5a78; /* Deep math blue */
+            --secondary: #6d9f71; /* Math green */
+            --accent: #d4a017; /* Golden ratio */
+            --correct: #4caf50; /* Correct green */
+            --incorrect: #f44336; /* Incorrect red */
+            --background: #1e1e1e; /* Dark background */
+            --text-light: #f5f5f5;
+            --text-dark: #212121;
+            --math-pattern: rgba(74, 144, 226, 0.05);
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Cambria', 'Georgia', serif;
+            background: 
+                radial-gradient(circle at 10% 20%, var(--math-pattern) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, var(--math-pattern) 0%, transparent 20%),
+                linear-gradient(to bottom, #1a1a2e, #16213e);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(30, 30, 30, 0.85);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(109, 159, 113, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, transparent 65%, rgba(109, 159, 113, 0.1) 100%),
+                linear-gradient(-135deg, transparent 65%, rgba(212, 160, 23, 0.1) 100%);
+            z-index: -1;
+        }
+
+        h1, h2, h3 {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+        }
+
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: var(--text-dark);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+
+        .question-box {
+            margin: 25px 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .question-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .options label {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .options label:hover {
+            background: rgba(109, 159, 113, 0.2);
+        }
+
+        .options label::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .options label:hover::before {
+            left: 100%;
+        }
+
+        button {
+            background: linear-gradient(to right, var(--secondary), #5d8b61);
+            color: var(--text-dark);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 30px auto 10px;
+            transition: all 0.3s;
+            display: block;
+            width: 250px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(109, 159, 113, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(109, 159, 113, 0.4);
+        }
+
+        button::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(30deg);
+            transition: all 0.3s;
+        }
+
+        button:hover::after {
+            left: 100%;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(109, 159, 113, 0.5);
+        }
+
+        .correct {
+            background: var(--correct) !important;
+            color: white;
+        }
+
+        .incorrect {
+            background: var(--incorrect) !important;
+            color: white;
+        }
+
+        .results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border-top: 3px solid var(--secondary);
+        }
+
+        .stats {
+            background: rgba(109, 159, 113, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .teacher-portal {
+            display: none;
+            background: rgba(30, 30, 30, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(109, 159, 113, 0.3);
+        }
+
+        .teacher-results table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .teacher-results th, .teacher-results td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .teacher-results th {
+            background: linear-gradient(to right, var(--primary), #2c4a6b);
+            color: white;
+        }
+
+        .teacher-results tr:nth-child(even) {
+            background: rgba(109, 159, 113, 0.05);
+        }
+
+        .resume-alert {
+            background: var(--accent);
+            color: var(--text-dark);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .math-symbol {
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.03;
+            z-index: -1;
+            font-weight: bold;
+        }
+
+        .symbol-1 {
+            top: 50px;
+            right: 50px;
+        }
+
+        .symbol-2 {
+            bottom: 50px;
+            left: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .options label {
+                padding: 12px 15px;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .stat-item {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="math-symbol symbol-1">∑</div>
+    <div class="math-symbol symbol-2">π</div>
+
+    <div class="container" id="registration">
+        <h1>Mathematics Mastery Test</h1>
+        <div class="teacher-login">
+            <h3>Teacher Access</h3>
+            <input type="password" id="teacherPassword" placeholder="Enter teacher password">
+            <button onclick="showTeacherPortal()" style="background: var(--primary); color: white;">View Results</button>
+        </div>
+        <p style="font-size: 1.1rem; margin-top: 30px; color: var(--secondary);">Student Registration:</p>
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <button onclick="startTest()" style="margin-top: 20px;">Begin Examination</button>
+    </div>
+
+    <div class="container" id="testContainer" style="display: none;">
+        <div class="timer" id="timer">30:00</div>
+        <h2>Mathematics Test</h2>
+        <p style="color: var(--secondary);">You have 30 minutes to complete 40 questions. Good luck!</p>
+        <div id="resumeAlert" class="resume-alert" style="display: none;">
+            <h3>Incomplete Test Found!</h3>
+            <p>Would you like to resume your previous attempt?</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="resumeTest()">Resume Test</button>
+                <button onclick="startNewTest()" style="background: var(--accent);">Start New Test</button>
+            </div>
+        </div>
+        <div id="questions"></div>
+        <button onclick="submitTest()" id="submitBtn">Submit Answers</button>
+    </div>
+
+    <div class="container" id="resultsContainer" style="display: none;">
+        <h2>Test Results</h2>
+        <div id="stats" class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="scoreValue">0/40</div>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="percentageValue">0%</div>
+                <div class="stat-label">Percentage</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="timeValue">0m 0s</div>
+                <div class="stat-label">Time Used</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="speedValue">0%</div>
+                <div class="stat-label">Speed Efficiency</div>
+            </div>
+        </div>
+        <div id="results"></div>
+        <button onclick="location.reload()" style="background: var(--primary); color: white;">Return to Home</button>
+    </div>
+
+    <div class="container teacher-portal" id="teacherPortal">
+        <h2>Teacher Results Portal</h2>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="exportResults()">Export Results</button>
+            <button onclick="clearResults()" style="background: var(--accent);">Clear All Results</button>
+        </div>
+        <div class="teacher-results" id="teacherResults"></div>
+        <button onclick="location.reload()" style="background: var(--primary); color: white; margin-top: 20px;">Return to Home</button>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                question: "Solve the equation: 2/x + 7/(x+1) = 1/(x-1)",
+                options: ["(-1, 5)", "(-1, -5)", "(1, 2)", "(2, 7)"],
+                correct: 1
+            },
+            {
+                question: "Factorize completely: x² - 5x + 6",
+                options: ["(x-1)(x-6)", "(x-2)(x-3)", "(x+2)(x+3)", "(x-1)(x-5)"],
+                correct: 1
+            },
+            {
+                question: "Solve for x: 3^(2x-1) = 81",
+                options: ["1.5", "2", "2.5", "3"],
+                correct: 2
+            },
+            {
+                question: "Simplify: √(50) + √(18) - √(8)",
+                options: ["5√2", "6√2", "7√2", "8√2"],
+                correct: 1
+            },
+            {
+                question: "Find the LCM of 12x³y and 18x²y⁴",
+                options: ["36x²y", "36x³y⁴", "72x³y", "72x³y⁴"],
+                correct: 1
+            },
+            {
+                question: "Solve the inequality: 2x - 5 < 3x + 2",
+                options: ["x > -7", "x < -7", "x > 7", "x < 7"],
+                correct: 0
+            },
+            {
+                question: "If p = 1 - √3, find p² + 2p + 3",
+                options: ["1", "2", "3", "4"],
+                correct: 0
+            },
+            {
+                question: "Solve the simultaneous equations: 2x + y = 7, x - y = -1",
+                options: ["(2,3)", "(3,2)", "(1,2)", "(2,1)"],
+                correct: 0
+            },
+            {
+                question: "Find the sum of the first 20 terms of the arithmetic progression 3, 7, 11,...",
+                options: ["800", "820", "840", "860"],
+                correct: 1
+            },
+            {
+                question: "Simplify: (x² - 9)/(x² + 5x + 6)",
+                options: ["(x-3)/(x+2)", "(x+3)/(x-2)", "(x-3)/(x-2)", "(x+3)/(x+2)"],
+                correct: 0
+            },
+            {
+                question: "A triangle has sides measuring 5cm, 12cm, and 13cm. What is its area?",
+                options: ["30cm²", "60cm²", "65cm²", "78cm²"],
+                correct: 0
+            },
+            {
+                question: "Calculate the volume of a cone with radius 7cm and height 12cm (take π = 22/7)",
+                options: ["308cm³", "616cm³", "924cm³", "1232cm³"],
+                correct: 1
+            },
+            {
+                question: "A chord of length 24cm is 5cm from the center of a circle. Calculate the radius",
+                options: ["7cm", "13cm", "17cm", "25cm"],
+                correct: 1
+            },
+            {
+                question: "The angle of a sector of a circle is 72°. If the radius is 5cm, find the perimeter of the sector",
+                options: ["12.28cm", "16.28cm", "18.28cm", "22.28cm"],
+                correct: 1
+            },
+            {
+                question: "A rectangular box has dimensions 8cm by 5cm by 3cm. Find its total surface area",
+                options: ["79cm²", "120cm²", "158cm²", "240cm²"],
+                correct: 2
+            },
+            {
+                question: "Two similar triangles have corresponding sides in the ratio 3:5. If the area of the smaller triangle is 36cm², find the area of the larger triangle",
+                options: ["60cm²", "100cm²", "144cm²", "225cm²"],
+                correct: 1
+            },
+            {
+                question: "Find the angle between the diagonals of a rhombus if one of its angles is 60°",
+                options: ["30°", "60°", "90°", "120°"],
+                correct: 1
+            },
+            {
+                question: "A regular hexagon has side length 4cm. Calculate its area",
+                options: ["24√3 cm²", "36√3 cm²", "48√3 cm²", "64√3 cm²"],
+                correct: 0
+            },
+            {
+                question: "The diameter of a sphere is 14cm. Find its volume (take π = 22/7)",
+                options: ["1437.33cm³", "1792.33cm³", "2058.67cm³", "2156.00cm³"],
+                correct: 0
+            },
+            {
+                question: "A pyramid has a square base of side 6cm and height 8cm. Find its volume",
+                options: ["48cm³", "96cm³", "144cm³", "288cm³"],
+                correct: 1
+            },
+            {
+                question: "Differentiate y = (2x² + 3)³ with respect to x",
+                options: ["6x(2x² + 3)²", "12x(2x² + 3)²", "24x(2x² + 3)²", "48x(2x² + 3)²"],
+                correct: 1
+            },
+            {
+                question: "Find ∫(3x² - 2x + 1)dx",
+                options: ["x³ - x² + x + C", "6x - 2 + C", "x³ - 2x² + x + C", "x³ - x² + C"],
+                correct: 0
+            },
+            {
+                question: "Find the derivative of y = sin(3x + 2)",
+                options: ["3cos(3x + 2)", "-3cos(3x + 2)", "cos(3x + 2)", "-cos(3x + 2)"],
+                correct: 0
+            },
+            {
+                question: "Evaluate ∫(from 0 to 1) (2x + 3)dx",
+                options: ["3", "4", "5", "6"],
+                correct: 1
+            },
+            {
+                question: "Find the turning point of the curve y = x² - 4x + 3",
+                options: ["(1,0)", "(2,-1)", "(3,0)", "(4,3)"],
+                correct: 1
+            },
+            {
+                question: "If dy/dx = 6x² - 4x and y = 10 when x = 1, find y when x = 2",
+                options: ["12", "14", "16", "18"],
+                correct: 3
+            },
+            {
+                question: "Find the second derivative of y = x³ - 2x² + 5x - 1",
+                options: ["3x² - 4x + 5", "6x - 4", "6x + 4", "6x² - 4x"],
+                correct: 1
+            },
+            {
+                question: "Evaluate lim(x→2) (x² - 4)/(x - 2)",
+                options: ["0", "2", "4", "Undefined"],
+                correct: 2
+            },
+            {
+                question: "Find the area bounded by the curve y = x², the x-axis, and the lines x = 1 and x = 2",
+                options: ["7/3", "8/3", "3", "10/3"],
+                correct: 0
+            },
+            {
+                question: "If f(x) = (2x + 1)/(x - 3), find f'(x)",
+                options: ["-7/(x-3)²", "7/(x-3)²", "(5)/(x-3)²", "(-5)/(x-3)²"],
+                correct: 0
+            },
+            {
+                question: "The mean of 5, 8, 10, 12, x is 9. Find x",
+                options: ["7", "8", "9", "10"],
+                correct: 3
+            },
+            {
+                question: "A fair die is rolled once. What is the probability of getting a prime number?",
+                options: ["1/6", "1/3", "1/2", "2/3"],
+                correct: 2
+            },
+            {
+                question: "The marks obtained by 10 students are: 5, 9, 7, 6, 8, 4, 5, 7, 6, 8. Find the median",
+                options: ["5.5", "6", "6.5", "7"],
+                correct: 2
+            },
+            {
+                question: "A bag contains 4 red and 6 blue balls. Two balls are drawn at random. Find the probability that both are red",
+                options: ["2/15", "4/25", "3/20", "1/5"],
+                correct: 0
+            },
+            {
+                question: "The variance of 2, 4, 6, 8, 10 is:",
+                options: ["4", "6", "8", "10"],
+                correct: 2
+            },
+            {
+                question: "In how many ways can the letters of the word \"MATHS\" be arranged?",
+                options: ["24", "60", "120", "720"],
+                correct: 2
+            },
+            {
+                question: "The mean deviation of 2, 5, 7, 8, 10 is:",
+                options: ["2.0", "2.4", "2.8", "3.2"],
+                correct: 1
+            },
+            {
+                question: "A committee of 3 is to be formed from 5 men and 4 women. In how many ways can this be done if there must be at least one woman?",
+                options: ["30", "50", "74", "80"],
+                correct: 2
+            },
+            {
+                question: "The probability that a student passes Mathematics is 2/3 and Physics is 4/9. If the probability of passing at least one subject is 4/5, find the probability of passing both subjects",
+                options: ["14/45", "8/15", "22/45", "4/9"],
+                correct: 0
+            },
+            {
+                question: "The quartile deviation of 3, 5, 7, 9, 11, 13, 15 is:",
+                options: ["3", "4", "5", "6"],
+                correct: 1
+            }
+        ];
+
+        // Configuration
+        const TEACHER_PASSWORD = "math123";
+        const TEST_DURATION = 1800; // 30 minutes in seconds
+        let timeLeft = TEST_DURATION;
+        let timerId;
+        let userAnswers = Array(questions.length).fill(null);
+        let testStarted = false;
+        let testSubmitted = false;
+        let startTime;
+        let endTime;
+
+        // Check for saved test on load
+        window.addEventListener('load', checkForSavedTest);
+
+        function checkForSavedTest() {
+            const savedTest = localStorage.getItem('savedTest');
+            if (savedTest) {
+                const data = JSON.parse(savedTest);
+                if (!data.completed) {
+                    document.getElementById('resumeAlert').style.display = 'block';
+                    document.getElementById('registration').style.display = 'none';
+                    document.getElementById('testContainer').style.display = 'block';
+                }
+            }
+        }
+
+        function startTest() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            if (!name || !phone) {
+                alert("Please enter both name and phone number");
+                return;
+            }
+
+            // Clear any previous save
+            localStorage.removeItem('savedTest');
+            
+            document.getElementById('registration').style.display = 'none';
+            document.getElementById('testContainer').style.display = 'block';
+            
+            startTime = new Date();
+            renderQuestions();
+            
+            // Start timer after 3 seconds
+            setTimeout(() => {
+                testStarted = true;
+                timerId = setInterval(updateTimer, 1000);
+                setupSecurity();
+            }, 3000);
+        }
+
+        function resumeTest() {
+            const savedData = JSON.parse(localStorage.getItem('savedTest'));
+            userAnswers = savedData.answers;
+            timeLeft = savedData.timeLeft;
+            startTime = new Date(new Date().getTime() - (TEST_DURATION - timeLeft) * 1000);
+            
+            document.getElementById('resumeAlert').style.display = 'none';
+            renderQuestions();
+            
+            // Restore selected answers
+            userAnswers.forEach((answer, index) => {
+                if (answer !== null) {
+                    const radio = document.querySelector(`input[name="q${index}"][value="${answer}"]`);
+                    if (radio) radio.checked = true;
+                }
+            });
+            
+            if (savedData.testStarted) {
+                testStarted = true;
+                timerId = setInterval(updateTimer, 1000);
+                setupSecurity();
+                updateTimerDisplay();
+            }
+        }
+
+        function startNewTest() {
+            localStorage.removeItem('savedTest');
+            location.reload();
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            saveProgress();
+            
+            if (timeLeft <= 0) {
+                submitTest();
+            }
+            
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const seconds = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+            
+            if (timeLeft <= 300) {
+                document.getElementById('timer').style.background = '#E74C3C';
+            }
+        }
+
+        function saveProgress() {
+            const saveData = {
+                answers: userAnswers,
+                timeLeft: timeLeft,
+                testStarted: testStarted,
+                completed: false,
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim()
+            };
+            localStorage.setItem('savedTest', JSON.stringify(saveData));
+        }
+
+        function setupSecurity() {
+            // Tab switching detection
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && testStarted && !testSubmitted) {
+                    submitTest();
+                }
+            });
+            
+            // Prevent context menu
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            
+            // Prevent keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && testStarted && !testSubmitted) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions');
+            container.innerHTML = '';
+            
+            questions.forEach((q, i) => {
+                const div = document.createElement('div');
+                div.className = 'question-box';
+                div.innerHTML = `
+                    <h3>Q${i+1}: ${q.question}</h3>
+                    <div class="options" id="options-${i}">
+                        ${q.options.map((opt, j) => `
+                            <label>
+                                <input type="radio" name="q${i}" value="${j}" onchange="saveAnswer(${i}, ${j})">
+                                ${String.fromCharCode(65 + j)}) ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function saveAnswer(questionIndex, answerIndex) {
+            userAnswers[questionIndex] = answerIndex;
+            saveProgress();
+        }
+
+        function submitTest() {
+            if (testSubmitted) return;
+            testSubmitted = true;
+            
+            clearInterval(timerId);
+            endTime = new Date();
+            
+            // Save results
+            const score = calculateScore();
+            const timeUsed = TEST_DURATION - timeLeft;
+            const speedPercentage = calculateSpeedPercentage(timeUsed);
+            saveResults(score, timeUsed, speedPercentage);
+            
+            // Show results
+            showResults(score, timeUsed, speedPercentage);
+            
+            // Clear saved progress
+            localStorage.removeItem('savedTest');
+        }
+
+        function calculateScore() {
+            let score = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].correct) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        function calculateSpeedPercentage(timeUsed) {
+            // Calculate speed as percentage (100% = answered all questions in 1 minute)
+            // Minimum time threshold (1 minute) to prevent division by zero
+            const minTime = 60; // 1 minute
+            const adjustedTime = Math.max(timeUsed, minTime);
+            
+            // Maximum possible speed (all questions answered in 1 minute)
+            const maxSpeed = questions.length / minTime;
+            
+            // Actual speed
+            const actualSpeed = questions.length / adjustedTime;
+            
+            // Convert to percentage (capped at 100%)
+            const speedPercentage = Math.min((actualSpeed / maxSpeed) * 100, 100);
+            
+            return Math.round(speedPercentage);
+        }
+
+        function saveResults(score, timeUsed, speedPercentage) {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const percentage = ((score / questions.length) * 100).toFixed(1);
+            const minutesUsed = Math.floor(timeUsed / 60);
+            const secondsUsed = timeUsed % 60;
+            
+            const result = {
+                name,
+                phone,
+                score,
+                percentage,
+                timeUsed,
+                speedPercentage,
+                timestamp: new Date().toISOString(),
+                answers: userAnswers
+            };
+            
+            const allResults = JSON.parse(localStorage.getItem('testResults') || '[]');
+            allResults.push(result);
+            localStorage.setItem('testResults', JSON.stringify(allResults));
+        }
+
+        function showResults(score, timeUsed, speedPercentage) {
+            document.getElementById('testContainer').style.display = 'none';
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.style.display = 'block';
+            
+            const percentage = ((score / questions.length) * 100).toFixed(1);
+            const minutesUsed = Math.floor(timeUsed / 60);
+            const secondsUsed = timeUsed % 60;
+            
+            // Update stats display
+            document.getElementById('scoreValue').textContent = `${score}/${questions.length}`;
+            document.getElementById('percentageValue').textContent = `${percentage}%`;
+            document.getElementById('timeValue').textContent = `${minutesUsed}m ${secondsUsed}s`;
+            document.getElementById('speedValue').textContent = `${speedPercentage}%`;
+            
+            let resultsHTML = `<div class="results"><h3>Question Review:</h3>`;
+            
+            questions.forEach((q, i) => {
+                const userAnswer = userAnswers[i];
+                const isCorrect = userAnswer === q.correct;
+                
+                resultsHTML += `
+                    <div class="question-box">
+                        <h4>Q${i+1}: ${q.question}</h4>
+                        <div class="options">
+                `;
+                
+                q.options.forEach((opt, j) => {
+                    const isUserAnswer = j === userAnswer;
+                    const isCorrectAnswer = j === q.correct;
+                    let optionClass = '';
+                    
+                    if (isCorrectAnswer) {
+                        optionClass = 'correct';
+                    } else if (isUserAnswer && !isCorrect) {
+                        optionClass = 'incorrect';
+                    }
+                    
+                    resultsHTML += `
+                        <label class="${optionClass}">
+                            ${String.fromCharCode(65 + j)}) ${opt}
+                            ${isUserAnswer ? ' (Your answer)' : ''}
+                            ${isCorrectAnswer && !isUserAnswer ? ' (Correct answer)' : ''}
+                        </label>
+                    `;
+                });
+                
+                resultsHTML += `</div></div>`;
+            });
+            
+            resultsHTML += `</div>`;
+            document.getElementById('results').innerHTML = resultsHTML;
+        }
+
+        function showTeacherPortal() {
+            const password = document.getElementById('teacherPassword').value;
+            if (password !== TEACHER_PASSWORD) {
+                alert("Incorrect password");
+                return;
+            }
+            
+            document.getElementById('registration').style.display = 'none';
+            document.getElementById('teacherPortal').style.display = 'block';
+            displayTeacherResults();
+        }
+
+        function displayTeacherResults() {
+            const results = JSON.parse(localStorage.getItem('testResults') || '[]');
+            let tableHTML = `
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Time Used</th>
+                        <th>Speed %</th>
+                        <th>Date</th>
+                    </tr>
+            `;
+            
+            results.forEach(result => {
+                const minutes = Math.floor(result.timeUsed / 60);
+                const seconds = result.timeUsed % 60;
+                const timeUsedStr = `${minutes}m ${seconds}s`;
+                
+                tableHTML += `
+                    <tr>
+                        <td>${result.name}</td>
+                        <td>${result.phone}</td>
+                        <td>${result.score}/${questions.length}</td>
+                        <td>${result.percentage}%</td>
+                        <td>${timeUsedStr}</td>
+                        <td>${result.speedPercentage}%</td>
+                        <td>${new Date(result.timestamp).toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `</table>`;
+            document.getElementById('teacherResults').innerHTML = tableHTML;
+        }
+
+        function exportResults() {
+            const results = JSON.parse(localStorage.getItem('testResults') || '[]');
+            let csvContent = "data:text/csv;charset=utf-8,Name,Phone,Score,Percentage,Time Used (s),Speed (%),Date\n";
+            
+            results.forEach(result => {
+                csvContent += `"${result.name}","${result.phone}",${result.score},${result.percentage},${result.timeUsed},${result.speedPercentage},${result.timestamp}\n`;
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "math_test_results.csv");
+            document.body.appendChild(link);
+            link.click();
+        }
+
+        function clearResults() {
+            if (confirm("Are you sure you want to clear all results?")) {
+                localStorage.removeItem('testResults');
+                displayTeacherResults();
+            }
+        }
+    </script>
+</head>
+</html>
